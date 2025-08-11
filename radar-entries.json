@@ -128,11 +128,11 @@
     "ring": 1,
     "moved": 0,
     "summary": "Managed NoSQL key-value database with single-digit ms latency at scale.",
-    "decision": "Case-by-Case for key-value and high-scale access patterns.",
+    "decision": "Consider for key-value and high-scale access patterns.",
     "when_to_use": ["High read/write throughput", "Key-value and document data", "Event/state stores"],
     "consider": ["Relational workloads (use PostgreSQL)", "Cache-only use (use Redis)"],
     "links": [{ "title": "Docs", "url": "https://docs.aws.amazon.com/dynamodb/" }],
-    "logo": "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/amazonaws.svg"
+    "logo": "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/amazondynamodb.svg"
   },
   {
     "label": "Neo4j",
@@ -179,11 +179,11 @@
     "ring": 1,
     "moved": 0,
     "summary": "Managed containers (Fargate/EC2).",
-    "decision": "Case-by-Case for SSR and services needing container control.",
+    "decision": "Consider for SSR and services needing container control.",
     "when_to_use": ["SSR backends", "Persistent APIs", "Background workers"],
     "consider": ["Simple static/CSR apps (use S3 + CloudFront)"],
     "links": [{ "title": "Docs", "url": "https://docs.aws.amazon.com/ecs/" }],
-    "logo": "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/amazonaws.svg"
+    "logo": "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/amazonecs.svg"
   },
   {
     "label": "S3 + CloudFront",
@@ -203,7 +203,7 @@
     "ring": 1,
     "moved": 0,
     "summary": "Managed platform for Next.js and edge functions.",
-    "decision": "Case-by-Case for Next.js apps needing edge and fast DX.",
+    "decision": "Consider for Next.js apps needing edge and fast DX.",
     "when_to_use": ["Marketing sites", "Early-stage apps"],
     "consider": ["Deep AWS integration", "Complex networking", "ECS Fargate for SSR control"],
     "links": [{ "title": "Docs", "url": "https://vercel.com/docs" }],
@@ -215,7 +215,7 @@
     "ring": 1,
     "moved": 0,
     "summary": "Hosted Postgres + auth/storage/RT for rapid apps.",
-    "decision": "Case-by-Case for prototypes and small apps.",
+    "decision": "Consider for prototypes and small apps.",
     "when_to_use": ["MVPs", "Internal tools"],
     "consider": ["Strict compliance/ VPC needs (prefer AWS services)"],
     "links": [{ "title": "Docs", "url": "https://supabase.com/docs" }],
@@ -243,7 +243,7 @@
     "when_to_use": ["Relational DB usernames/passwords", "Multi-field creds stored as JSON", "Rotation/audit/versioning required"],
     "consider": ["Most app/service secrets (prefer SSM + KMS)", "Simple config/env vars (use SSM)"],
     "links": [{ "title": "Docs", "url": "https://docs.aws.amazon.com/secretsmanager/" }],
-    "logo": "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/amazonaws.svg"
+    "logo": "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/awssecretsmanager.svg"
   },
   {
     "label": "AWS SSM Parameter Store",
@@ -279,7 +279,7 @@
     "when_to_use": ["All repositories", "PR reviews", "Issues/Projects/Discussions"],
     "consider": [],
     "links": [{ "title": "Docs", "url": "https://docs.github.com/" }],
-    "logo": "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/github.svg"
+    "logo": "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/git.svg"
   },
   {
     "label": "HeyAPI (Schema Generation)",
@@ -314,7 +314,8 @@
     "decision": "Primary coding tool of choice for all development work.",
     "when_to_use": ["All coding tasks", "Rapid prototyping", "Complex refactoring", "Feature implementation", "Bug fixing"],
     "consider": ["When you prefer more automated/CLI-style code generation (use Claude Code)"],
-    "links": [{ "title": "Cursor", "url": "https://www.cursor.com/" }]
+    "links": [{ "title": "Cursor", "url": "https://www.cursor.com/" }],
+    "logo": "https://registry.npmmirror.com/@lobehub/icons-static-png/1.61.0/files/light/cursor.png"
   },
   {
     "label": "Sentry",
@@ -322,7 +323,7 @@
     "ring": 1,
     "moved": 0,
     "summary": "Error monitoring and performance tracing.",
-    "decision": "Case-by-Case for error tracking across services.",
+    "decision": "Consider for error tracking across services.",
     "when_to_use": ["Frontend and backend error visibility"],
     "consider": [
       "Supabase app stack (consider Supabase logging/observability)",
@@ -369,12 +370,12 @@
     "logo": "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/playwright.svg"
   },
   {
-    "label": "Monorepo (per product)",
+    "label": "Product Monorepo",
     "quadrant": 3,
     "ring": 1,
     "moved": 0,
     "summary": "One repository per product containing its apps/packages and shared libraries.",
-    "decision": "Case-by-Case. Allowed pattern is a monorepo per product. Each product should have its own separate repo; do not combine unrelated products in one repo.",
+    "decision": "Consider. Allowed pattern is a monorepo per product. Each product should have its own separate repo; do not combine unrelated products in one repo.",
     "when_to_use": [
       "A single product with multiple apps/packages",
       "Shared libraries within a product",
@@ -384,7 +385,32 @@
       "Multiple independent products (use separate repos per product)",
       "Loosely coupled services across products (prefer polyrepo)"
     ],
-    "links": []
+    "links": [],
+    "logo": "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/git.svg"
+  },
+  {
+    "label": "Trunk-based Development",
+    "quadrant": 3,
+    "ring": 0,
+    "moved": 0,
+    "summary": "Short-lived branches into main, staging deploys from main, GitHub release tags promote to prod.",
+    "decision": "Primary branching and release strategy.",
+    "when_to_use": ["All product repos"],
+    "consider": [],
+    "links": [{ "title": "Trunk-based development", "url": "https://trunkbaseddevelopment.com/" }],
+    "logo": "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/git.svg"
+  },
+  {
+    "label": "GitFlow",
+    "quadrant": 3,
+    "ring": 3,
+    "moved": 0,
+    "summary": "Feature and release branches with long-lived develop; heavy ceremony.",
+    "decision": "Avoid; adds overhead and slows delivery.",
+    "when_to_use": [],
+    "consider": ["Legacy processes with strict release gates"],
+    "links": [{ "title": "GitFlow", "url": "https://nvie.com/posts/a-successful-git-branching-model/" }],
+    "logo": "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/git.svg"
   },
   {
     "label": "AWS CodeSuite",
@@ -455,7 +481,8 @@
     "decision": "Experiment for routing/mixing models and quick trials.",
     "when_to_use": ["Model trials", "Niche model access"],
     "consider": ["Consolidate to primary providers for production"],
-    "links": [{ "title": "OpenRouter", "url": "https://openrouter.ai/" }]
+    "links": [{ "title": "OpenRouter", "url": "https://openrouter.ai/" }],
+    "logo": "https://registry.npmmirror.com/@lobehub/icons-static-png/1.61.0/files/light/openrouter.png"
   },
   {
     "label": "TensorZero",
@@ -466,7 +493,8 @@
     "decision": "Experiment only.",
     "when_to_use": ["Prototyping", "Benchmarks"],
     "consider": [],
-    "links": []
+    "links": [],
+    "logo": "https://www.tensorzero.com/favicon.svg"
   },
   {
     "label": "LiteLLM",
@@ -477,7 +505,8 @@
     "decision": "Primary for connecting to OpenAI/Anthropic/Gemini with a unified API.",
     "when_to_use": ["Server-side LLM calls", "Provider failover/routing"],
     "consider": [],
-    "links": [{ "title": "LiteLLM", "url": "https://docs.litellm.ai/" }]
+    "links": [{ "title": "LiteLLM", "url": "https://docs.litellm.ai/" }],
+    "logo": "https://deepgram.com/_next/image?url=https%3A%2F%2Fasset.brandfetch.io%2FidsEQhJQ4R%2Fid3o9IccaX.png&w=640&q=75"
   },
   {
     "label": "LangChain",
@@ -485,7 +514,7 @@
     "ring": 1,
     "moved": 0,
     "summary": "Framework for building LLM applications: tools, chains, agents.",
-    "decision": "Case-by-Case depending on complexity; keep vendor-neutral abstractions.",
+    "decision": "Consider depending on complexity; keep vendor-neutral abstractions.",
     "when_to_use": ["Complex LLM workflows", "Tool/agent orchestration"],
     "consider": ["Simple direct SDK calls via LiteLLM"],
     "links": [{ "title": "Docs", "url": "https://python.langchain.com/" }],
@@ -500,7 +529,8 @@
     "decision": "Primary engineering methodology.",
     "when_to_use": ["All teams"],
     "consider": [],
-    "links": []
+    "links": [],
+    "logo": "https://cdn.jsdelivr.net/gh/twitter/twemoji/assets/svg/2699.svg"
   },
   {
     "label": "Agile (Scrum/Kanban)",
@@ -511,7 +541,8 @@
     "decision": "Primary process with team-specific flavor.",
     "when_to_use": ["All product teams"],
     "consider": [],
-    "links": []
+    "links": [],
+    "logo": "https://cdn-icons-png.flaticon.com/512/6403/6403812.png"
   },
   {
     "label": "Jira",

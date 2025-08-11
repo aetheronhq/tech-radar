@@ -4,10 +4,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Aetheron's Tech Radar — Our Opinionated Tech Stack</title>
+    <link rel="icon" href="https://www.aetheron.com/favicon.ico" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script src="vendor/radar-0.12.js"></script>
@@ -24,6 +25,11 @@
         --muted: #86a8a9;
       }
 
+      /* Allow all layout containers to shrink on small viewports */
+      .page, .grid, .card, .intro, .library, .radar-col, .radar-wrap, #radar, .controls, .list, .details {
+        min-width: 0;
+      }
+
       html, body {
         height: 100%;
       }
@@ -37,8 +43,8 @@
 
       .page {
         max-width: 1400px;
-        margin: 40px auto;
-        padding: 0 24px 48px; /* add bottom padding so content doesn't butt against page bottom */
+        margin:  auto;
+        padding: 0 0 24px; /* remove side padding so only card margin provides side space */
       }
 
       .card {
@@ -47,7 +53,7 @@
         border-radius: 18px;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.03);
         padding: 28px 28px 28px; /* increase bottom padding inside the card */
-        margin-bottom: 28px; /* spacing between stacked cards */
+        margin: 24px; /* spacing between stacked cards */
       }
 
       .title {
@@ -55,10 +61,28 @@
         font-size: clamp(24px, 3.3vw, 44px);
         font-weight: 700;
         letter-spacing: -0.02em;
+        display: inline-flex;
+        align-items: center;
+        gap: 14px;
       }
+      .brand-logo-crop {
+        height: 52px;
+        width: 52px; /* crop to hide the wordmark portion */
+        overflow: hidden;
+        border-radius: 6px;
+        display: inline-block;
+        transform: translateY(0);
+      }
+      .brand-logo-crop .brand-logo {
+        height: 52px;
+        width: auto;
+        object-fit: cover;
+      }
+      .brand-name { font-weight: 700; opacity: .95; }
+      .product-title { font-weight: 800; }
 
       .subtitle {
-        margin: 0 6px 24px;
+        margin: 0 6px 4px;
         color: var(--muted);
         font-weight: 500;
       }
@@ -66,27 +90,32 @@
       .grid {
         display: grid;
         grid-template-columns: 1.2fr 0.8fr; /* left: title+radar, right: library */
+        grid-template-rows: auto 1fr; /* compact first row */
         grid-template-areas:
           "intro library"
           "radar library";
-        gap: 28px;
+        gap: 16px;
         align-items: start;
       }
 
       @media (max-width: 980px) {
         .grid {
           grid-template-columns: 1fr;
+          grid-template-rows: auto auto auto; /* stack all rows, no overlap */
           grid-template-areas:
             "intro"
             "library"
             "radar";
+          gap: 12px;
         }
         .library {
-          position: static;
-          height: auto;
+          position: static !important; /* disable sticky on mobile */
+          height: auto !important;
+          z-index: auto;
         }
         .radar-wrap {
           min-height: 360px;
+          margin-top: 8px; /* ensure visual separation from library */
         }
       }
 
@@ -120,24 +149,54 @@
         position: sticky;
         top: 16px;
         /* Fill viewport height from sticky offset down */
-        height: calc(100vh - 16px - 16px);
+        height: calc(100vh - 16px - 16px - 80px); /* reduce by ~1 card height */
         display: flex;
         flex-direction: column;
       }
       .library h2 { margin: 4px 2px 6px; font-size: 18px; letter-spacing: 0; }
-      .controls { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+      .controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 6px; margin-bottom: 8px; }
       .controls input, .controls select {
+        width: 100%;
         background: #0b1d1e; border: 1px solid #173a3b; color: var(--text-1);
-        border-radius: 8px; padding: 8px 10px; font-family: inherit;
+        border-radius: 8px; padding: 5px 8px; font-family: inherit; font-size: 13px;
+      }
+      @media (max-width: 520px) {
+        .controls { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
       }
       .legend-row { display: flex; gap: 10px; align-items: center; margin: 8px 0 10px; color: var(--muted); font-size: 12px; }
       .ring-dot { width: 8px; height: 8px; border-radius: 999px; display: inline-block; margin-right: 6px; }
 
       .list { display: grid; gap: 6px; overflow: auto; padding-right: 6px; flex: 1; min-height: 0; }
-      .item { padding: 10px; border: 1px solid #173a3b; border-radius: 10px; background: #0b1d1e; cursor: pointer; transition: border-color .15s ease, background .15s ease; }
+      .item { padding: 10px; border: 1px solid #173a3b; border-radius: 10px; background: #0b1d1e; cursor: pointer; transition: border-color .15s ease, background .15s ease; display: grid; grid-template-columns: 28px 1fr; gap: 10px; align-items: center; }
       .item:hover { border-color: #2b4f51; background: #0e2122; }
       .item.selected { border-color: #13a3b0; background: rgba(19, 163, 176, 0.15); box-shadow: 0 0 0 1px rgba(19, 163, 176, 0.3); }
       .item.highlighted { border-color: #13a3b0; background: rgba(19, 163, 176, 0.1); animation: pulse-highlight 1.5s ease-out; }
+      .item .logo { 
+        width: 22px; 
+        height: 22px; 
+        padding: 2px; 
+        border-radius: 4px; 
+        object-fit: contain; 
+        background: transparent; 
+        border: 1px solid #173a3b; 
+        box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+        filter: brightness(0) invert(1); /* force white */
+      }
+      .item .logo-letter { 
+        width: 22px;
+        height: 22px;
+        padding: 2px;
+        border-radius: 4px;
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        font-weight: 700; 
+        font-size: 12px; 
+        color: #ffffff; 
+        background: transparent; 
+        border: 1px solid #173a3b; 
+        box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+      }
       
       @keyframes pulse-highlight {
         0% { box-shadow: 0 0 0 0 rgba(19, 163, 176, 0.4); }
@@ -175,6 +234,18 @@
       .details h3 { margin: 0 0 8px; }
       .details .meta { color: var(--muted); font-size: 13px; margin-bottom: 8px; }
       .details ul { margin: 6px 0 0 18px; }
+      .details .detail-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+      .details .logo { 
+        width: 44px; height: 44px; padding: 2px; border-radius: 6px; 
+        object-fit: contain; background: transparent; border: 1px solid #173a3b; 
+        box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02); filter: brightness(0) invert(1);
+      }
+      .details .logo-letter { 
+        width: 44px; height: 44px; padding: 2px; border-radius: 6px; 
+        display: flex; align-items: center; justify-content: center; 
+        font-weight: 700; font-size: 24px; color: #ffffff; background: transparent; 
+        border: 1px solid #173a3b; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+      }
 
       /* Tweak the generated SVG to fit the dark theme */
       #radar { 
@@ -189,7 +260,7 @@
       #radar g.blip.dim { opacity: .25; }
       #radar g.blip.highlighted { opacity: 1 !important; }
       #radar g.blip.highlighted circle, #radar g.blip.highlighted polygon { stroke: #eaf4f4 !important; stroke-width: 2px !important; }
-      #radar .quadrant-label { fill: var(--text-2); opacity: 0.40; font-weight: 600; font-size: 20px; pointer-events: none; }
+      #radar .quadrant-label { fill: var(--text-2); opacity: 0.60; font-weight: 600; font-size: 20px; pointer-events: none; }
       /* Ensure blips are fully clickable */
       #radar g.blip { pointer-events: all; }
       #radar g.blip * { pointer-events: all; cursor: pointer; }
@@ -203,8 +274,11 @@
       <section class="card">
         <div class="grid">
           <div class="intro">
-        <h1 class="title">Aetheron's Tech Radar</h1>
-        <p class="subtitle">Our opinionated tech stack. The tools we back as Primary, the options we use Case‑by‑Case, what we're Experimenting with, and what to Avoid. Built to share our defaults, speed decisions, and spark healthy debate.</p>
+        <h1 class="title">
+          <span class="brand-logo-crop"><img class="brand-logo" src="https://www.aetheron.com/images/aetheron-logo-secondary.png" alt="Aetheron" /></span>
+          <span>Aetheron Tech Radar</span>
+        </h1>
+        <p class="subtitle">Our opinionated tech stack. The tools we back as Primary, the options we Consider, what we Experiment with, and what we Avoid. Built to share our defaults, speed decisions, and spark healthy debate.</p>
           </div>
           <aside class="library">
             <h2>Tech Stack Library</h2>
@@ -245,533 +319,6 @@
           RADAR_ENTRIES = [];
           initializeRadar();
         });
-        {
-          label: "Next.js",
-          quadrant: 1,
-          ring: 0,
-          moved: 0,
-          summary: "React framework with routing, SSR/ISR.",
-          decision: "Use for React apps needing SSR, routing, or API routes.",
-          when_to_use: ["SEO/SSR needs", "Edge rendering", "Rapid app setup"],
-          consider: ["Pure SPA with static hosting"],
-          links: [{ title: "Docs", url: "https://nextjs.org/docs" }],
-          logo: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/nextdotjs.svg",
-        },
-        {
-          label: "Tailwind CSS",
-          quadrant: 1,
-          ring: 0,
-          moved: 0,
-          summary: "Utility-first CSS for speed and consistency.",
-          decision: "Mandatory styling framework alongside our design system (no alternatives).",
-          when_to_use: ["All new React/Next.js UIs"],
-          consider: [],
-          links: [{ title: "Docs", url: "https://tailwindcss.com/docs" }],
-          logo: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/tailwindcss.svg",
-        },
-        {
-          label: "FastAPI",
-          quadrant: 1,
-          ring: 0,
-          moved: 0,
-          summary: "Python web framework with type hints and high performance (Starlette + Pydantic).",
-          decision: "Primary for complex backends and compute/ML-heavy services.",
-          when_to_use: [
-            "Complex business logic and APIs",
-            "Async I/O heavy services",
-            "ML inference or Python-first teams",
-          ],
-          consider: [
-            "Next.js Server/Route Handlers for simple frontend-adjacent endpoints",
-            "Supabase functions/auth when building on Supabase",
-          ],
-          links: [{ title: "Docs", url: "https://fastapi.tiangolo.com/" }],
-          logo: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/fastapi.svg",
-        },
-
-        {
-          label: "SQLAlchemy",
-          quadrant: 1,
-          ring: 0,
-          moved: 0,
-          summary: "Python ORM for relational databases.",
-          decision: "Adopt for Python services using Postgres.",
-          when_to_use: ["Python APIs", "Data access layer"],
-          consider: [
-            "Building on Supabase (use Supabase client/Auth)",
-            "Simple Next.js backends (use Route Handlers/Server Actions with Prisma or direct SQL)",
-            "No-ORM patterns for very small services",
-          ],
-          links: [{ title: "Docs", url: "https://docs.sqlalchemy.org/" }],
-          logo: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/sqlalchemy.svg",
-        },
-        {
-          label: "Pydantic",
-          quadrant: 1,
-          ring: 0,
-          moved: 0,
-          summary: "Python data validation and settings using type hints.",
-          decision: "Adopt with FastAPI and Python services.",
-          when_to_use: ["Request/response models", "Config management"],
-          consider: ["Ultra-high perf paths (pure dataclasses)"] ,
-          links: [{ title: "Docs", url: "https://docs.pydantic.dev/" }],
-          logo: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/pydantic.svg",
-        },
-
-        {
-          label: "JavaScript",
-          quadrant: 1,
-          ring: 3,
-          moved: 0,
-          summary: "Avoid plain JavaScript in application code; use TypeScript for type safety and scale.",
-          decision: "Avoid — TypeScript is mandatory for app/front-end code.",
-          when_to_use: [],
-          consider: [],
-          links: [{ title: "TS Handbook", url: "https://www.typescriptlang.org/docs/handbook/intro.html" }],
-          logo: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/javascript.svg",
-        },
-
-        // Data & ML (1)
-        {
-          label: "PostgreSQL",
-          quadrant: 1,
-          ring: 0,
-          moved: 0,
-          summary: "Reliable relational database with strong SQL and extensions.",
-          decision: "Primary OLTP database; managed preferred.",
-          when_to_use: ["Transactional data", "General purpose persistence"],
-          consider: [
-            "Vector-heavy retrieval/search (use a dedicated vector database)",
-            "Key-value workloads (use DynamoDB or Redis)",
-            "Analytical/OLAP workloads (use a warehouse)",
-          ],
-          links: [{ title: "Docs", url: "https://www.postgresql.org/docs/" }],
-          logo: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/postgresql.svg",
-        },
-
-        {
-          label: "Amazon DynamoDB",
-          quadrant: 1,
-          ring: 1,
-          moved: 0,
-          summary: "Managed NoSQL key-value database with single-digit ms latency at scale.",
-          decision: "Case-by-Case for key-value and high-scale access patterns.",
-          when_to_use: ["High read/write throughput", "Key-value and document data", "Event/state stores"],
-          consider: ["Relational workloads (use PostgreSQL)", "Cache-only use (use Redis)"] ,
-          links: [{ title: "Docs", url: "https://docs.aws.amazon.com/dynamodb/" }],
-          logo: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/amazonaws.svg",
-        },
-
-        {
-          label: "Neo4j",
-          quadrant: 1,
-          ring: 2,
-          moved: 0,
-          summary: "Native graph database for connected data and traversals.",
-          decision: "Experiment for graph-heavy problems (knowledge graphs, recommendations).",
-          when_to_use: ["Deep relationship queries", "Graph analytics", "Knowledge graphs"],
-          consider: ["Traditional OLTP (use PostgreSQL)"] ,
-          links: [{ title: "Docs", url: "https://neo4j.com/docs/" }],
-          logo: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/neo4j.svg",
-        },
-
-        // Infrastructure (2)
-        {
-          label: "AWS",
-          quadrant: 0,
-          ring: 0,
-          moved: 0,
-          summary: "Primary cloud for production workloads.",
-          decision: "Default hosting platform.",
-          when_to_use: ["Prod services", "Data infra", "Networking/security"],
-          consider: ["Edge-first static sites (see Vercel)"],
-          links: [{ title: "AWS", url: "https://aws.amazon.com/" }],
-          logo: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/amazonaws.svg",
-        },
-        {
-          label: "OpenNext + Lambda",
-          quadrant: 2,
-          ring: 2,
-          moved: 0,
-          summary: "Run Next.js on AWS Lambda using OpenNext.",
-          decision: "Experiment vs Vercel/ECS for Next.js apps on AWS.",
-          when_to_use: ["AWS-first orgs", "Cost control", "Regional needs"],
-          consider: ["Managed DX (Vercel)", "Container control (ECS Fargate)"],
-          links: [
-            { title: "OpenNext", url: "https://open-next.js.org/" },
-            { title: "AWS Lambda", url: "https://docs.aws.amazon.com/lambda/" }
-          ],
-          logo: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/awslambda.svg",
-        },
-        {
-          label: "Amazon ECS",
-          quadrant: 0,
-          ring: 1,
-          moved: 0,
-          summary: "Managed containers (Fargate/EC2).",
-          decision: "Case-by-Case for SSR and services needing container control.",
-          when_to_use: ["SSR backends", "Persistent APIs", "Background workers"],
-          consider: ["Simple static/CSR apps (use S3 + CloudFront)"],
-          links: [{ title: "Docs", url: "https://docs.aws.amazon.com/ecs/" }],
-          logo: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/amazonaws.svg",
-        },
-        {
-          label: "S3 + CloudFront",
-          quadrant: 0,
-          ring: 0,
-          moved: 0,
-          summary: "Global CDN + object storage for static and client-rendered apps.",
-          decision: "Primary for static sites and frontend apps without SSR or custom servers.",
-          when_to_use: ["Static sites/docs", "SPAs/CSR apps", "Static asset delivery"],
-          consider: ["Server-side rendering (see ECS Fargate)", "OpenNext serverless (Experiment)", "Vercel for edge SSR"],
-          links: [{ title: "S3", url: "https://docs.aws.amazon.com/s3/" }, { title: "CloudFront", url: "https://docs.aws.amazon.com/AmazonCloudFront/" }],
-          logo: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/amazons3.svg",
-        },
-        {
-          label: "Vercel",
-          quadrant: 0,
-          ring: 1,
-          moved: 0,
-          summary: "Managed platform for Next.js and edge functions.",
-          decision: "Case-by-Case for Next.js apps needing edge and fast DX.",
-          when_to_use: ["Marketing sites", "Early-stage apps"],
-          consider: ["Deep AWS integration", "Complex networking", "ECS Fargate for SSR control"],
-          links: [{ title: "Docs", url: "https://vercel.com/docs" }],
-          logo: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/vercel.svg",
-        },
-        {
-          label: "Supabase",
-          quadrant: 0,
-          ring: 1,
-          moved: 0,
-          summary: "Hosted Postgres + auth/storage/RT for rapid apps.",
-          decision: "Case-by-Case for prototypes and small apps.",
-          when_to_use: ["MVPs", "Internal tools"],
-          consider: ["Strict compliance/ VPC needs (prefer AWS services)"],
-          links: [{ title: "Docs", url: "https://supabase.com/docs" }],
-          logo: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/supabase.svg",
-        },
-        {
-          label: "Terraform",
-          quadrant: 0,
-          ring: 0,
-          moved: 0,
-          summary: "Infrastructure-as-code to standardise cloud builds.",
-          decision: "Mandatory for AWS infrastructure as code (no alternatives).",
-          when_to_use: ["All AWS provisioning", "Reusable modules", "Environment parity"],
-          consider: [],
-          links: [{ title: "Docs", url: "https://developer.hashicorp.com/terraform/docs" }],
-          logo: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/terraform.svg",
-        },
-
-        {
-          label: "AWS Secrets Manager",
-          quadrant: 0,
-          ring: 0,
-          moved: 0,
-          summary: "Purpose-built secret store with rotation and versioning for credential objects.",
-          decision: "Use primarily for database credentials as JSON with rotation/versioning.",
-          when_to_use: ["Relational DB usernames/passwords", "Multi-field creds stored as JSON", "Rotation/audit/versioning required"],
-          consider: ["Most app/service secrets (prefer SSM + KMS)", "Simple config/env vars (use SSM)"] ,
-          links: [{ title: "Docs", url: "https://docs.aws.amazon.com/secretsmanager/" }],
-          logo: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/amazonaws.svg",
-        },
-        {
-          label: "AWS SSM Parameter Store",
-          quadrant: 0,
-          ring: 0,
-          moved: 0,
-          summary: "Hierarchical parameters for config and secrets; supports KMS encryption.",
-          decision: "Default for app/service secrets (KMS-encrypted) and plain-text config/vars.",
-          when_to_use: ["Service/application secrets with KMS", "Plain-text vars and feature flags", "Per-env hierarchies like /prod/app/VAR"],
-          consider: ["Managed rotation of DB creds (use Secrets Manager)", "Very large binary values"],
-          links: [{ title: "Docs", url: "https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-parameter-store.html" }],
-          logo: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/amazonaws.svg",
-        },
-
-        // Tools & Practices (3)
-        {
-          label: "GitHub Actions",
-          quadrant: 3,
-          ring: 0,
-          moved: 0,
-          summary: "CI/CD for builds, tests, releases, and deployments.",
-          decision: "Mandatory CI/CD across all repositories (no alternatives).",
-          when_to_use: ["All repositories"],
-          consider: [],
-          links: [{ title: "Docs", url: "https://docs.github.com/actions" }],
-          logo: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/githubactions.svg",
-        },
-        {
-          label: "GitHub",
-          quadrant: 3,
-          ring: 0,
-          moved: 0,
-          summary: "Primary git host and collaboration platform (repos, PRs, issues).",
-          decision: "Single source control platform for all projects (no alternatives).",
-          when_to_use: ["All repositories", "PR reviews", "Issues/Projects/Discussions"],
-          consider: [],
-          links: [{ title: "Docs", url: "https://docs.github.com/" }],
-          logo: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/github.svg",
-        },
-        {
-          label: "HeyAPI (Schema Generation)",
-          quadrant: 3,
-          ring: 0,
-          moved: 0,
-          summary: "Generate and validate API schemas; drive client/server types from a single source.",
-          decision: "Primary for API schema generation and typed SDKs.",
-          when_to_use: ["OpenAPI-first services", "Client SDK generation", "Contract testing"],
-          consider: [],
-          links: [{ title: "HeyAPI", url: "https://heyapi.dev" }],
-          logo: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/openapiinitiative.svg",
-        },
-        {
-          label: "Claude Code",
-          quadrant: 3,
-          ring: 0,
-          moved: 0,
-          summary: "AI-powered coding assistant integrated into your IDE for enhanced development productivity.",
-          decision: "Primary coding tool of choice for all development work.",
-          when_to_use: ["All coding tasks", "Feature development", "Debugging", "Code reviews", "Documentation"],
-          consider: ["When you prefer more manual control over code generation (use Cursor IDE)"],
-          links: [{ title: "Anthropic", url: "https://www.anthropic.com/" }],
-          logo: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/anthropic.svg",
-        },
-        {
-          label: "Cursor IDE",
-          quadrant: 3,
-          ring: 0,
-          moved: 0,
-          summary: "AI-first IDE built on VSCode with powerful code generation and editing capabilities.",
-          decision: "Primary coding tool of choice for all development work.",
-          when_to_use: ["All coding tasks", "Rapid prototyping", "Complex refactoring", "Feature implementation", "Bug fixing"],
-          consider: ["When you prefer more automated/CLI-style code generation (use Claude Code)"],
-          links: [{ title: "Cursor", url: "https://www.cursor.com/" }],
-          // no logo currently
-        },
-        {
-          label: "Sentry",
-          quadrant: 3,
-          ring: 1,
-          moved: 0,
-          summary: "Error monitoring and performance tracing.",
-          decision: "Case-by-Case for error tracking across services.",
-          when_to_use: ["Frontend and backend error visibility"],
-          consider: [
-            "Supabase app stack (consider Supabase logging/observability)",
-            "High-scale or enterprise observability (consider Datadog, New Relic, Dynatrace)",
-            "Fully self-hosted needs",
-          ],
-          links: [{ title: "Docs", url: "https://docs.sentry.io/" }],
-          logo: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/sentry.svg",
-        },
-        {
-          label: "Clerk",
-          quadrant: 2,
-          ring: 0,
-          moved: 0,
-          summary: "Managed user management and authentication.",
-          decision: "Primary choice for auth across apps where SaaS is acceptable.",
-          when_to_use: ["Most product apps", "Next.js/React stacks"],
-          consider: ["Supabase Auth when building on Supabase"],
-          links: [{ title: "Docs", url: "https://clerk.com/docs" }],
-          logo: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/clerk.svg",
-        },
-        {
-          label: "Stripe",
-          quadrant: 2,
-          ring: 0,
-          moved: 0,
-          summary: "Payments platform and billing.",
-          decision: "Mandatory payments and invoicing (no alternatives).",
-          when_to_use: ["Commerce", "Subscriptions"],
-          consider: [],
-          links: [{ title: "Docs", url: "https://stripe.com/docs" }],
-          logo: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/stripe.svg",
-        },
-        {
-          label: "Playwright",
-          quadrant: 3,
-          ring: 0,
-          moved: 0,
-          summary: "End-to-end browser testing framework.",
-          decision: "Adopt for E2E tests.",
-          when_to_use: ["Web UI tests", "Smoke checks"],
-          consider: ["Mobile native testing"],
-          links: [{ title: "Docs", url: "https://playwright.dev/docs/intro" }],
-          logo: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/playwright.svg",
-        },
-        {
-          label: "Monorepo (per product)",
-          quadrant: 3,
-          ring: 1,
-          moved: 0,
-          summary: "One repository per product containing its apps/packages and shared libraries.",
-          decision: "Case-by-Case. Allowed pattern is a monorepo per product. Each product should have its own separate repo; do not combine unrelated products in one repo.",
-          when_to_use: [
-            "A single product with multiple apps/packages",
-            "Shared libraries within a product",
-            "Need atomic changes and unified versioning across product components",
-          ],
-          consider: [
-            "Multiple independent products (use separate repos per product)",
-            "Loosely coupled services across products (prefer polyrepo)",
-          ],
-          links: [],
-        },
-        {
-          label: "AWS CodeSuite",
-          quadrant: 3,
-          ring: 3,
-          moved: 0,
-          summary: "Legacy AWS developer tools (CodeBuild/CodePipeline/etc).",
-          decision: "Hold; prefer GitHub Actions pipelines.",
-          when_to_use: ["Existing legacy only"],
-          consider: ["Migrate to GHA"],
-          links: [{ title: "AWS", url: "https://aws.amazon.com/code/" }],
-          logo: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/amazonaws.svg",
-        },
-
-        // LLMs, Dev tooling, and methodologies
-        {
-          label: "OpenAI GPT-5",
-          quadrant: 2,
-          ring: 0,
-          moved: 0,
-          summary: "Primary general-purpose model for product features and internal tooling where suitable.",
-          decision: "Primary LLM provider alongside Anthropic and Gemini.",
-          when_to_use: ["General reasoning", "Code assistance", "Chat features"],
-          consider: [],
-          links: [{ title: "OpenAI", url: "https://platform.openai.com/docs" }],
-          logo: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/openai.svg",
-        },
-        {
-          label: "Anthropic Sonnet 4",
-          quadrant: 2,
-          ring: 0,
-          moved: 0,
-          summary: "Primary reasoning/coding model alternative; strong safety and tool-use.",
-          decision: "Primary LLM provider alongside OpenAI and Gemini.",
-          when_to_use: ["Reasoning", "Long-context", "Code reviews"],
-          consider: [],
-          links: [{ title: "Anthropic", url: "https://docs.anthropic.com/" }],
-          logo: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/anthropic.svg",
-        },
-        {
-          label: "Gemini 2.5 Pro",
-          quadrant: 2,
-          ring: 0,
-          moved: 0,
-          summary: "Primary multimodal/LLM option with strong Google ecosystem fit.",
-          decision: "Primary LLM provider alongside OpenAI and Anthropic.",
-          when_to_use: ["Multimodal", "RAG", "Google ecosystem"],
-          consider: [],
-          links: [{ title: "Gemini", url: "https://ai.google.dev/" }],
-          logo: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/google.svg",
-        },
-        {
-          label: "Gemini 2.5 Flash",
-          quadrant: 2,
-          ring: 0,
-          moved: 0,
-          summary: "Primary cost/perf option for low-latency tasks.",
-          decision: "Primary where latency/cost are key and quality is sufficient.",
-          when_to_use: ["Summarisation", "Classification", "Light assistants"],
-          consider: [],
-          links: [{ title: "Gemini", url: "https://ai.google.dev/" }],
-          logo: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/google.svg",
-        },
-        {
-          label: "OpenRouter",
-          quadrant: 2,
-          ring: 2,
-          moved: 0,
-          summary: "Multi-provider LLM gateway for experimentation.",
-          decision: "Experiment for routing/mixing models and quick trials.",
-          when_to_use: ["Model trials", "Niche model access"],
-          consider: ["Consolidate to primary providers for production"],
-          links: [{ title: "OpenRouter", url: "https://openrouter.ai/" }],
-        },
-        {
-          label: "TensorZero",
-          quadrant: 2,
-          ring: 2,
-          moved: 0,
-          summary: "Evaluate as an experimentation platform for LLM workflows.",
-          decision: "Experiment only.",
-          when_to_use: ["Prototyping", "Benchmarks"],
-          consider: [],
-          links: [],
-        },
-        {
-          label: "LiteLLM",
-          quadrant: 3,
-          ring: 0,
-          moved: 0,
-          summary: "Primary LLM proxy/router abstraction across providers.",
-          decision: "Primary for connecting to OpenAI/Anthropic/Gemini with a unified API.",
-          when_to_use: ["Server-side LLM calls", "Provider failover/routing"],
-          consider: [],
-          links: [{ title: "LiteLLM", url: "https://docs.litellm.ai/" }],
-        },
-        {
-          label: "LangChain",
-          quadrant: 3,
-          ring: 1,
-          moved: 0,
-          summary: "Framework for building LLM applications: tools, chains, agents.",
-          decision: "Case-by-Case depending on complexity; keep vendor-neutral abstractions.",
-          when_to_use: ["Complex LLM workflows", "Tool/agent orchestration"],
-          consider: ["Simple direct SDK calls via LiteLLM"],
-          links: [{ title: "Docs", url: "https://python.langchain.com/" }],
-          logo: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/langchain.svg",
-        },
-        {
-          label: "DevOps Methodology",
-          quadrant: 3,
-          ring: 0,
-          moved: 0,
-          summary: "Culture and practices for collaboration, CI/CD, and ownership.",
-          decision: "Primary engineering methodology.",
-          when_to_use: ["All teams"],
-          consider: [],
-          links: [],
-        },
-        {
-          label: "Agile (Scrum/Kanban)",
-          quadrant: 3,
-          ring: 0,
-          moved: 0,
-          summary: "Primary delivery framework for planning and execution.",
-          decision: "Primary process with team-specific flavor.",
-          when_to_use: ["All product teams"],
-          consider: [],
-          links: [],
-        },
-        {
-          label: "Jira",
-          quadrant: 3,
-          ring: 0,
-          moved: 0,
-          summary: "Project tracking and workflows.",
-          decision: "Primary issue tracking platform.",
-          when_to_use: ["All projects"],
-          consider: [],
-          links: [{ title: "Docs", url: "https://support.atlassian.com/jira-software-cloud/" }],
-          logo: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/jira.svg",
-        },
-        {
-          label: "Confluence",
-          quadrant: 3,
-          ring: 0,
-          moved: 0,
-          summary: "Team documentation and knowledge base.",
-          decision: "Primary internal documentation platform.",
-          when_to_use: ["Docs", "Runbooks", "Product specs"],
-          consider: [],
-          links: [{ title: "Docs", url: "https://support.atlassian.com/confluence-cloud/" }],
-          logo: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/confluence.svg",
 
       // ====================================
       // Configuration Constants
@@ -784,12 +331,12 @@
       ];
 
       const RINGS = [
-        { name: "Primary",       color: "#5ba300" },
-        { name: "Case-by-Case",  color: "#13a3b0" },
-        { name: "Experiment",    color: "#c7ba00" },
-        { name: "Avoid",         color: "#e09b96" },
+        { name: "Primary",    color: "#5ba300" },
+        { name: "Consider",   color: "#13a3b0" },
+        { name: "Experiment", color: "#c7ba00" },
+        { name: "Avoid",      color: "#e09b96" },
       ];
-      const RING_ORDER = [0, 1, 2, 3]; // Primary -> Case-by-Case -> Trial -> Avoid
+      const RING_ORDER = [0, 1, 2, 3]; // Primary -> Consider -> Experiment -> Avoid
 
       // ====================================
       // Radar Visualization Functions
@@ -827,14 +374,14 @@
         const svg = d3.select("#radar");
         svg.attr("preserveAspectRatio", "xMidYMid meet");
         
-        // The radar is drawn with radius 400 centered at (0,0) after transform
-        // So viewBox should be centered on the transformed position
+        // The radar group is nudged vertically in the vendor lib; reflect that in the viewBox
         const radarRadius = 400;
         const padding = 10; // Minimal padding for maximum radar size
+        const nudgeY = -20; // must match verticalNudge in vendor/radar-0.12.js
         const viewBoxSize = (radarRadius + padding) * 2;
         // Center the viewBox on the radar (which is centered at size/2, size/2)
         const viewBoxX = (size / 2) - (radarRadius + padding);
-        const viewBoxY = (size / 2) - (radarRadius + padding);
+        const viewBoxY = (size / 2) - (radarRadius + padding) + nudgeY;
         svg.attr("viewBox", `${viewBoxX} ${viewBoxY} ${viewBoxSize} ${viewBoxSize}`);
 
         // Add quadrant labels relative to the radar center
@@ -898,14 +445,23 @@
           return a.label.localeCompare(b.label);
         });
 
-        list.innerHTML = items.map(e => `
+        list.innerHTML = items.map(e => {
+          const letter = (e.label || '?').trim().charAt(0).toUpperCase();
+          const logoHtml = e.logo
+            ? `<img class=\"logo\" src=\"${e.logo}\" alt=\"\" aria-hidden=\"true\" onerror=\"this.replaceWith(Object.assign(document.createElement('div'),{className:'logo-letter',textContent:'${letter}'}))\">`
+            : `<div class=\"logo-letter\" aria-hidden=\"true\">${letter}</div>`;
+          return `
           <div class="item" data-label="${e.label}">
+              ${logoHtml}
+              <div>
             <div class="name">${e.label}
               <span class="badge ring-${e.ring}">${RINGS[e.ring].name}</span>
             </div>
             <div class="meta">${QUADRANTS[e.quadrant].name}</div>
           </div>
-        `).join("");
+            </div>
+          `;
+        }).join("");
 
         list.querySelectorAll('.item').forEach(el => {
           const label = el.dataset.label;
@@ -921,10 +477,19 @@
         const lib = document.querySelector('.library');
         if (!e) { box.hidden = true; if (lib) lib.classList.remove('has-selection'); return; }
         const links = (e.links || []).map(l => `<a href="${l.url}" target="_blank" rel="noopener">${l.title}</a>`).join(" · ");
+        const letter = (e.label || '?').trim().charAt(0).toUpperCase();
+        const logo = e.logo
+          ? `<img class=\"logo\" src=\"${e.logo}\" alt=\"\" aria-hidden=\"true\" onerror=\"this.replaceWith(Object.assign(document.createElement('div'),{className:'logo-letter',textContent:'${letter}'}))\">`
+          : `<div class=\"logo-letter\" aria-hidden=\"true\">${letter}</div>`;
         box.innerHTML = `
           <button class="close-btn" aria-label="Close details" title="Close">&times;</button>
-          <h3>${e.label} <span class="badge">${RINGS[e.ring].name}</span></h3>
+          <div class="detail-header">
+            ${logo}
+            <div>
+              <h3 style="margin:0">${e.label} <span class="badge">${RINGS[e.ring].name}</span></h3>
           <div class="meta">${QUADRANTS[e.quadrant].name}${links ? ' · ' + links : ''}</div>
+            </div>
+          </div>
           <p>${e.summary || ''}</p>
           ${e.decision ? `<p><strong>Decision:</strong> ${e.decision}</p>` : ''}
           ${Array.isArray(e.when_to_use) && e.when_to_use.length > 0 ? `<p><strong>Use for</strong></p><ul>${e.when_to_use.map(x => `<li>${x}</li>`).join('')}</ul>` : ''}
@@ -1025,7 +590,7 @@
         drawRadar();
         renderList();
       }
-      
+
       window.addEventListener("resize", () => {
         // Debounce a little to avoid excessive redraws
         clearTimeout(window.__radarRedraw);

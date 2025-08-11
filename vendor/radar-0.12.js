@@ -35,7 +35,7 @@ function radar_visualization(config) {
 
   // custom random number generator, to make random sequence reproducible
   // source: https://stackoverflow.com/questions/521295
-  var seed = 42;
+  var seed = 36;
   function random() {
     var x = Math.sin(seed++) * 10000;
     return x - Math.floor(x);
@@ -58,10 +58,10 @@ function radar_visualization(config) {
   ];
 
   const rings = [
-    { radius: 130 },
-    { radius: 220 },
-    { radius: 310 },
-    { radius: 400 }
+    { radius: 175 }, // Primary – slightly bigger
+    { radius: 250 }, // Consider
+    { radius: 325 }, // Experiment
+    { radius: 400 }  // Avoid
   ];
 
   function polar(cartesian) {
@@ -192,7 +192,9 @@ function radar_visualization(config) {
     .attr("height", scaled_height);
 
   var radar = svg.append("g");
-  radar.attr("transform", translate(scaled_width / 2, scaled_height / 2).concat(`scale(${config.scale})`));
+  // Move the whole radar slightly up to better use available vertical space
+  var verticalNudge = -20; // pixels
+  radar.attr("transform", translate(scaled_width / 2, (scaled_height / 2) + verticalNudge).concat(`scale(${config.scale})`));
 
   var grid = radar.append("g");
 
@@ -314,12 +316,50 @@ function radar_visualization(config) {
         .style("cursor", "pointer");
     } else {
       blip.append("circle")
-        .attr("r", 10)
+        .attr("r", 14)
         .attr("fill", d.color)
         .style("cursor", "pointer");
     }
 
-    
+    // center logo (or letter fallback) inside the blip
+    if (d.logo) {
+      var img = blip.append("image")
+        .attr("href", d.logo)
+        .attr("xlink:href", d.logo)
+        .attr("x", -9.5)
+        .attr("y", -9.5)
+        .attr("width", 19)
+        .attr("height", 19)
+        .attr("preserveAspectRatio", "xMidYMid meet")
+        .style("pointer-events", "none")
+        .style("filter", "brightness(0)");
+      // Fallback to first letter if the image fails to load (e.g., CORS)
+      img.each(function(di) {
+        var node = this;
+        node.addEventListener('error', function() {
+          d3.select(node).remove();
+          var letter = (di.label || "?").toString().trim().charAt(0).toUpperCase();
+          blip.append("text")
+            .text(letter)
+            .attr("text-anchor", "middle")
+            .attr("dominant-baseline", "central")
+            .style("fill", "#ffffff")
+            .style("font-family", config.font_family)
+            .style("font-size", "10px")
+            .style("pointer-events", "none");
+        }, { once: true });
+      });
+    } else {
+      var letter = (d.label || "?").toString().trim().charAt(0).toUpperCase();
+      blip.append("text")
+        .text(letter)
+        .attr("text-anchor", "middle")
+        .attr("dominant-baseline", "central")
+        .style("fill", "#ffffff")
+        .style("font-family", config.font_family)
+        .style("font-size", "10px")
+        .style("pointer-events", "none");
+    }
   });
 
   // make sure that blips stay inside their segment
@@ -333,21 +373,26 @@ function radar_visualization(config) {
   d3.forceSimulation()
     .nodes(config.entries)
     .velocityDecay(0.19) // magic number (found by experimentation)
-    .force("collision", d3.forceCollide().radius(12).strength(0.85))
+    .force("collision", d3.forceCollide().radius(16).strength(0.9))
     .on("tick", ticked);
 
   // draw ring labels on top of everything
   if (config.print_layout) {
     var ringLabels = radar.append("g").attr("class", "ring-labels");
     for (var i = 0; i < rings.length; i++) {
+      // place the label at the vertical midpoint of each ring band,
+      // nudged down a few px for visual centering
+      var inner = (i === 0) ? 30 : rings[i - 1].radius;
+      var outer = rings[i].radius;
+      var yMid = -((inner + outer) / 2) + 12; // slight downward shift
       ringLabels.append("text")
         .text(config.rings[i].name)
-        .attr("y", -rings[i].radius + 62)
+        .attr("y", yMid)
         .attr("text-anchor", "middle")
         .style("fill", config.rings[i].color)
-        .style("opacity", 0.40)
+        .style("opacity", 0.60)
         .style("font-family", config.font_family)
-        .style("font-size", "38px")
+        .style("font-size", "36px")
         .style("font-weight", "bold")
         .style("pointer-events", "none")
         .style("user-select", "none");
