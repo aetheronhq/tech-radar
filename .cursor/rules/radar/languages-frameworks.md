@@ -1,0 +1,66 @@
+---
+description: Languages and frameworks technology decisions based on our tech radar
+alwaysApply: true
+---
+
+# Languages & Frameworks - Technology Decisions
+
+This file guides AI assistants on languages & frameworks technology choices based on our tech radar.
+
+## 🟢 PRIMARY (Always Prefer)
+
+- **Alembic**: For Python database migrations.
+  - Use for: SQLAlchemy migrations
+
+- **FastAPI**: Primary Python web framework.
+  - Use for: APIs, ML services
+
+- **HeyAPI (Schema Generation)**: For API schema generation.
+  - Use for: OpenAPI, typed SDKs
+
+- **LiteLLM**: Required LLM abstraction layer.
+  - Use for: Multi-provider LLM calls
+
+- **Next.js**: For React apps with SSR/routing.
+  - Use for: SSR, edge, routing
+
+- **PostgreSQL**: Primary database for all services.
+  - Use for: OLTP, general persistence
+
+- **Pydantic**: Required for Python data validation.
+  - Use for: Request/response models
+
+- **React**: Primary UI library.
+  - Use for: Web apps, UIs
+
+- **SQLAlchemy**: For Python database access.
+  - Use for: Python ORMs
+
+- **Tailwind CSS**: Required CSS framework.
+  - Use for: All React/Next.js styling
+
+- **TypeScript**: Mandatory for all JavaScript code.
+  - Use for: Frontend, Node APIs
+
+## 🟡 CONSIDER (Case-by-Case)
+
+- **Amazon DynamoDB**: For key-value at scale.
+  - When: High throughput, document storage
+
+- **LangChain**: For complex LLM workflows.
+  - When: Multi-step agents, orchestration
+
+## 🔵 EXPERIMENT (Trial Only)
+
+- **Neo4j**: Graph database. Currently experimental.
+
+## 🔴 AVOID (Use Alternatives)
+
+- **JavaScript**: Avoid. Use TypeScript instead.
+
+## Decision Rules
+
+1. ALWAYS suggest PRIMARY technologies first
+2. EXPLAIN trade-offs when CONSIDER technologies are proposed
+3. WARN when someone tries to use AVOID technologies
+4. For EXPERIMENT technologies, note they are in trial phase
