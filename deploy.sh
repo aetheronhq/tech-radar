@@ -9,6 +9,13 @@ echo "🚀 Deploying Tech Radar to S3..."
 # Set AWS credentials (temporary - using old account)
 export AWS_DEFAULT_REGION=ap-southeast-2
 
+# Copy .cursor files to public directory for deployment (they're gitignored)
+if [ -d ".cursor/rules/radar" ]; then
+  echo "📋 Copying Cursor rules to public directory..."
+  mkdir -p public/.cursor/rules/radar
+  cp -r .cursor/rules/radar/* public/.cursor/rules/radar/
+fi
+
 # Sync public directory to S3
 echo "📦 Syncing public directory to S3..."
 aws s3 sync public/ s3://radar.sandbox.aetheron.com/ \
@@ -17,14 +24,10 @@ aws s3 sync public/ s3://radar.sandbox.aetheron.com/ \
   --exclude ".DS_Store" \
   --exclude "*.swp"
 
-# Also sync Cursor rules if they exist
-if [ -d ".cursor/rules/radar" ]; then
-  echo "📝 Syncing Cursor rules to S3..."
-  aws s3 sync .cursor/rules/radar/ s3://radar.sandbox.aetheron.com/.cursor/rules/radar/ \
-    --cache-control "no-cache" \
-    --content-type "text/markdown" \
-    --exclude ".DS_Store" \
-    --exclude "*.swp"
+# Clean up the temporary .cursor files from public
+if [ -d "public/.cursor" ]; then
+  echo "🧹 Cleaning up temporary files..."
+  rm -rf public/.cursor
 fi
 
 # Create CloudFront invalidation
