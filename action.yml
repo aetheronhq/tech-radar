@@ -23,21 +23,28 @@ runs:
         mkdir -p .cursor/rules/radar
         
         # Download all quadrant rules
+        echo "📥 Downloading radar rules..."
         curl -sL "https://radar.sandbox.aetheron.com/.cursor/rules/radar/infrastructure.md" -o ".cursor/rules/radar/infrastructure.md"
         curl -sL "https://radar.sandbox.aetheron.com/.cursor/rules/radar/languages-frameworks.md" -o ".cursor/rules/radar/languages-frameworks.md"
         curl -sL "https://radar.sandbox.aetheron.com/.cursor/rules/radar/services-llms.md" -o ".cursor/rules/radar/services-llms.md"
         curl -sL "https://radar.sandbox.aetheron.com/.cursor/rules/radar/tools-methodologies.md" -o ".cursor/rules/radar/tools-methodologies.md"
         
         echo "✅ Radar rules synced"
+        echo "📂 Contents of .cursor/rules/radar/:"
+        ls -la .cursor/rules/radar/
 
     - name: Check for Changes
       id: check-changes
       shell: bash
       run: |
-        if git diff --quiet .cursor/rules/radar/; then
+        # Check for any changes (modified, new, or deleted files)
+        git add -A .cursor/rules/radar/
+        if git diff --cached --quiet; then
           echo "changed=false" >> $GITHUB_OUTPUT
+          echo "No changes detected in radar rules"
         else
           echo "changed=true" >> $GITHUB_OUTPUT
+          echo "Changes detected in radar rules"
         fi
 
     - name: Commit Changes
@@ -46,7 +53,6 @@ runs:
       run: |
         git config user.name 'github-actions[bot]'
         git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-        git add .cursor/rules/radar/
         git commit -m "🤖 Sync cursor rules from tech radar"
         git push origin HEAD:${{ github.head_ref }}
 
