@@ -1,6 +1,33 @@
 # Tech Radar Cursor Rules - GitHub Action Setup
 
-This action syncs technology radar decisions as Cursor IDE rules across your organization's repositories.
+**What This Does:** Automatically syncs your organization's technology radar decisions to Cursor IDE, ensuring all developers get consistent technology recommendations and guidance.
+
+## 🚀 Quick Start (One-Shot Setup)
+
+**Add tech radar rules to your repository in 30 seconds:**
+
+1. Create `.github/workflows/sync-radar.yml` in your repository
+2. Copy and paste this content:
+
+```yaml
+name: Sync Tech Radar Rules
+
+on:
+  pull_request:
+
+jobs:
+  sync-radar:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: Cognitive-Creators-AI/tech-radar@main  # ← That's it! 🎉
+```
+
+3. Commit and push - **Done!** ✅
+
+The action will automatically sync tech radar rules on every pull request.
 
 ## For Organization Administrators
 
@@ -31,25 +58,7 @@ This action syncs technology radar decisions as Cursor IDE rules across your org
 
 ## For Repository Maintainers
 
-### Add to Any Repository (One Line!)
-
-Create `.github/workflows/sync-radar.yml`:
-
-```yaml
-name: Sync Tech Radar Rules
-
-on:
-  pull_request:
-
-jobs:
-  sync-radar:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-    steps:
-      - uses: YOUR_ORG/radar@main  # ← That's it! 🎉
-```
+### How It Works
 
 **No configuration needed!** The action automatically fetches rules from the deployed radar site.
 
@@ -61,11 +70,15 @@ jobs:
 4. **Comments on PR**: Notifies developers when rules are updated
 5. **Organized Structure**: Rules are placed in `.cursor/rules/radar/` subfolder
 
-### Zero Configuration
+### Zero Configuration Required
 
-The action requires absolutely no configuration! It automatically fetches rules from the Aetheron Tech Radar at `https://radar.sandbox.aetheron.com/.cursor/rules/radar/`
+The action requires absolutely no configuration! It automatically:
+- Detects the radar deployment URL
+- Fetches the latest rules
+- Places them in the correct location
+- Only updates when rules change
 
-Just use it - that's it!
+Just add the workflow file - that's it!
 
 ### How Cursor Uses These Rules
 
@@ -91,14 +104,25 @@ Just use it - that's it!
 ### Troubleshooting
 
 **Action fails with 404 errors**
-- Ensure the radar site is accessible at https://radar.sandbox.aetheron.com
-- Check that rules have been generated and deployed
-- The action expects files at: `https://radar.sandbox.aetheron.com/.cursor/rules/radar/{file}.md`
+- Ensure the radar site is deployed and accessible
+- Check that rules have been generated in `.cursor/rules/radar/`
+- Verify the action can access the deployment URL
 
 **No changes detected**
 - Rules are already up to date
-- Check that the deployed radar site has the latest rules
+- This is normal if no radar changes have been made
 
 **Permission denied on push**
 - Ensure the workflow has `contents: write` permission
 - Check branch protection rules allow GitHub Actions to push
+- The permissions block in the workflow is required
+
+### Alternative: Manual Setup
+
+If you prefer not to use the GitHub Action, you can manually copy the rules:
+
+1. Visit the tech radar repository
+2. Copy the contents of `.cursor/rules/radar/` to your project
+3. Commit the files to your repository
+
+However, the GitHub Action is recommended as it keeps rules automatically synchronized.
