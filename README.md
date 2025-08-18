@@ -2,6 +2,18 @@
 
 A living, opinionated map of our engineering stack — inspired by the Thoughtworks Radar, tailored to Aetheron.
 
+## 🚀 Quick Start for Teams
+
+**To add tech radar rules to your repository, paste this into Cursor:**
+```
+Follow the instructions in the MD file you can curl from https://radar.sandbox.aetheron.com/action-setup.md
+```
+
+**Or use this Slack command (replace YOUR_REPO_NAME):**
+```
+@Cursor repo=Cognitive-Creators-AI/YOUR_REPO_NAME Follow the instructions in the MD file you can curl from https://radar.sandbox.aetheron.com/action-setup.md
+```
+
 ## Why this exists
 - **Internal**: clear defaults, faster decisions, easier onboarding, a place to propose/track experiments, and shared "when to use X vs Y" guidance.
 - **External**: signals we're modern and intentional, shows quality to candidates/clients, and serves as a strong tech‑marketing asset.
@@ -21,10 +33,10 @@ radar/
 ├── public/              # Static files served to users
 │   ├── index.html       # Main radar page
 │   ├── radar-entries.json # Technology data
+│   ├── action-setup.md  # GitHub Action setup guide
 │   └── vendor/          # Third-party libraries
 ├── radar-entries.json   # Source technology data
 ├── action.yml          # GitHub Action for syncing rules
-├── ACTION_SETUP.md     # Detailed action documentation
 ├── RADAR_TO_CURSOR_RULES.md # AI prompt for generating rules
 ├── deploy.sh           # Deploy to S3
 ├── serve.sh            # Local dev server
@@ -80,7 +92,7 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - uses: YOUR_ORG/radar@main  # ← That's it! One line!
+      - uses: Cognitive-Creators-AI/tech-radar@main  # ← That's it! One line!
 ```
 
 This will:
@@ -112,7 +124,7 @@ Once Cursor rules are in place, the AI will:
 
 ### For Organization Setup
 
-See [ACTION_SETUP.md](ACTION_SETUP.md) for detailed instructions on:
+See [ACTION_SETUP.md](public/action-setup.md) for detailed instructions on:
 - Setting up the GitHub Action in your repositories
 - Configuration options
 - Troubleshooting common issues
