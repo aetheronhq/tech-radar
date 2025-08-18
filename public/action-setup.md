@@ -17,48 +17,17 @@ on:
 
 jobs:
   sync-radar:
-    runs-on: ubuntu-latest
+    uses: Cognitive-Creators-AI/shared-ci-workflows/.github/workflows/sync-tech-radar-rules.yml@main
     permissions:
       contents: write
       pull-requests: write
-    steps:
-      - uses: Cognitive-Creators-AI/tech-radar@main  # ← That's it! 🎉
 ```
 
 3. Commit and push - **Done!** ✅
 
 The action will automatically sync tech radar rules on every pull request.
 
-## For Organization Administrators
-
-### Initial Setup (One Time)
-
-1. Ensure this radar repository contains generated Cursor rules in:
-   ```
-   .cursor/rules/radar/
-   ├── infrastructure.md
-   ├── languages-frameworks.md  
-   ├── services-llms.md
-   └── tools-methodologies.md
-   ```
-
-2. **Rules must be in Cursor-compatible format**:
-   - Markdown files (`.md` extension) with YAML frontmatter
-   - Must start with frontmatter between `---` markers:
-     ```yaml
-     ---
-     description: Brief description of when to apply this rule
-     alwaysApply: true
-     ---
-     ```
-   - After frontmatter, include human-readable instructions for the AI
-   - Example: "ALWAYS prefer PostgreSQL for new databases"
-
-3. Make sure the radar site is publicly accessible (or accessible to your CI/CD runners).
-
-## For Repository Maintainers
-
-### How It Works
+## How It Works
 
 **No configuration needed!** The action automatically fetches rules from the deployed radar site.
 
