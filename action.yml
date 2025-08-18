@@ -1,0 +1,66 @@
+name: 'Sync Tech Radar Cursor Rules'
+description: 'Automatically sync technology radar decisions as Cursor IDE rules to guide AI assistants'
+author: 'Your Organization'
+branding:
+  icon: 'compass'
+  color: 'blue'
+
+inputs:
+  radar-url:
+    description: 'URL for radar rules (defaults to Aetheron radar)'
+    required: false
+    default: 'https://radar.sandbox.aetheron.com/.cursor/rules/radar'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout PR Head
+      uses: actions/checkout@v3
+
+    - name: Download Radar Rules
+      shell: bash
+      run: |
+        echo "📍 Syncing from: ${{ inputs.radar-url }}"
+        
+        # Create the rules directory structure
+        mkdir -p .cursor/rules/radar
+        
+        # Download all quadrant rules
+        curl -sL "${{ inputs.radar-url }}/infrastructure.md" -o ".cursor/rules/radar/infrastructure.md"
+        curl -sL "${{ inputs.radar-url }}/languages-frameworks.md" -o ".cursor/rules/radar/languages-frameworks.md"
+        curl -sL "${{ inputs.radar-url }}/services-llms.md" -o ".cursor/rules/radar/services-llms.md"
+        curl -sL "${{ inputs.radar-url }}/tools-methodologies.md" -o ".cursor/rules/radar/tools-methodologies.md"
+        
+        echo "✅ Radar rules synced"
+
+    - name: Check for Changes
+      id: check-changes
+      shell: bash
+      run: |
+        if git diff --quiet .cursor/rules/radar/; then
+          echo "changed=false" >> $GITHUB_OUTPUT
+        else
+          echo "changed=true" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Commit Changes
+      if: steps.check-changes.outputs.changed == 'true'
+      shell: bash
+      run: |
+        git config user.name 'github-actions[bot]'
+        git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+        git add .cursor/rules/radar/
+        git commit -m "🤖 Sync cursor rules from tech radar"
+        git push
+
+    - name: Comment on PR
+      if: steps.check-changes.outputs.changed == 'true'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: '🤖 **Tech Radar Rules Updated**\n\nI\'ve synced the latest technology radar rules to guide our AI assistants. The updates are in `.cursor/rules/radar/`.'
+          })

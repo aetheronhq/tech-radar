@@ -9,30 +9,29 @@ echo "🚀 Deploying Tech Radar to S3..."
 # Set AWS credentials (temporary - using old account)
 export AWS_DEFAULT_REGION=ap-southeast-2
 
-# Deploy main HTML file
-echo "📄 Uploading radar.html..."
-aws s3 cp radar.html s3://radar.sandbox.aetheron.com/index.html \
-  --content-type "text/html" \
+# Sync public directory to S3
+echo "📦 Syncing public directory to S3..."
+aws s3 sync public/ s3://radar.sandbox.aetheron.com/ \
+  --delete \
   --cache-control "no-cache" \
-  --metadata-directive REPLACE
+  --exclude ".DS_Store" \
+  --exclude "*.swp"
 
-# Deploy JSON data file
-echo "📊 Uploading radar-entries.json..."
-aws s3 cp radar-entries.json s3://radar.sandbox.aetheron.com/radar-entries.json \
-  --content-type "application/json" \
-  --cache-control "no-cache"
-
-# Deploy vendor files
-echo "📦 Uploading vendor files..."
-aws s3 cp vendor/radar-0.12.js s3://radar.sandbox.aetheron.com/vendor/radar-0.12.js \
-  --content-type "application/javascript" \
-  --cache-control "no-cache"
+# Also sync Cursor rules if they exist
+if [ -d ".cursor/rules/radar" ]; then
+  echo "📝 Syncing Cursor rules to S3..."
+  aws s3 sync .cursor/rules/radar/ s3://radar.sandbox.aetheron.com/.cursor/rules/radar/ \
+    --cache-control "no-cache" \
+    --content-type "text/markdown" \
+    --exclude ".DS_Store" \
+    --exclude "*.swp"
+fi
 
 # Create CloudFront invalidation
 echo "🔄 Invalidating CloudFront cache..."
 INVALIDATION_ID=$(aws cloudfront create-invalidation \
   --distribution-id E3C42WRA8M2TYU \
-  --paths "/*" \
+  --paths "/*" "/.cursor/*" \
   --query 'Invalidation.Id' \
   --output text)
 

@@ -317,20 +317,18 @@
       // RADAR ENTRIES - Edit tech stack here
       // ====================================
       let RADAR_ENTRIES = [];
-      
-      // Load entries from JSON file
-      fetch('radar-entries.json', { cache: 'no-store' })
-        .then(r => {
+
+      async function loadEntries() {
+        try {
+          const r = await fetch('radar-entries.json', { cache: 'no-store' });
           if (!r.ok) throw new Error('HTTP ' + r.status);
-          return r.json();
-        })
-        .then(data => { RADAR_ENTRIES = data; initializeRadar(); })
-        .catch(err => {
+          RADAR_ENTRIES = await r.json();
+        } catch (err) {
           console.error('Failed to load radar entries:', err);
-          // Fallback: keep page usable without data
           RADAR_ENTRIES = [];
-          initializeRadar();
-        });
+        }
+        initializeRadar();
+      }
 
       // ====================================
       // Configuration Constants
@@ -617,6 +615,9 @@
 
       // Make selectLibraryItem globally accessible
       window.selectLibraryItem = selectLibraryItem;
+
+      // Kick off data load
+      loadEntries();
 </script>
   </body>
 </html>
