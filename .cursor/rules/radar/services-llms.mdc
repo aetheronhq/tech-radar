@@ -1,6 +1,6 @@
 ---
 description: Services and LLMs technology decisions based on our tech radar
-alwaysApply: true
+alwaysApply: false
 ---
 
 # Services & LLMs - Technology Decisions

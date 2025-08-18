@@ -1,6 +1,6 @@
 ---
 description: Languages and frameworks technology decisions based on our tech radar
-alwaysApply: true
+alwaysApply: false
 ---
 
 # Languages & Frameworks - Technology Decisions

@@ -1,6 +1,6 @@
 ---
 description: Tools and methodologies technology decisions based on our tech radar
-alwaysApply: true
+alwaysApply: false
 ---
 
 # Tools & Methodologies - Technology Decisions
