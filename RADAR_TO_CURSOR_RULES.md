@@ -33,7 +33,7 @@ alwaysApply: false
 
 ## Task Overview
 
-Convert `radar-entries.json` into 4 separate Cursor rule files, one for each quadrant.
+Convert `public/radar-entries.json` into 4 separate Cursor rule files, one for each quadrant.
 
 **REMEMBER: All files MUST use `.mdc` extension!**
 1. `.cursor/rules/radar/infrastructure.mdc`
@@ -43,7 +43,7 @@ Convert `radar-entries.json` into 4 separate Cursor rule files, one for each qua
 
 ## Source Data Structure
 
-The `radar-entries.json` file contains an array of technology entries with this structure:
+The `public/radar-entries.json` file contains an array of technology entries with this structure:
 ```json
 {
   "label": "Technology Name",
@@ -204,7 +204,7 @@ This file guides AI assistants on infrastructure technology choices based on our
 
 ## Files to Read
 
-1. Read `radar-entries.json` to get all technology entries
+1. Read `public/radar-entries.json` to get all technology entries
 2. Create the `.cursor/rules/radar/` directory structure
 3. Create the 4 `.mdc` files (NOT `.md`) in the `/radar` subfolder - MUST use `.mdc` extension!
 4. Each file should only contain technologies from its respective quadrant
