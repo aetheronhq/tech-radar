@@ -566,5 +566,16 @@
     "consider_alternitive": [],
     "links": [{ "title": "ESLint", "url": "https://eslint.org/docs/latest/" }, { "title": "Prettier", "url": "https://prettier.io/docs/en/" }],
     "logo": "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/eslint.svg"
+  },
+  {
+    "label": "Taskfile",
+    "quadrant": 3,
+    "ring": 0,
+    "summary": "Task runner for defining and organizing repository-wide scripts and commands.",
+    "decision": "Primary and accepted way of adding repo-wide scripts at the top level.",
+    "when_to_use": ["All repositories needing scripts", "Build automation", "Development workflows", "Deployment tasks"],
+    "consider_alternitive": [],
+    "links": [{ "title": "Docs", "url": "https://taskfile.dev/" }],
+    "logo": "https://taskfile.dev/img/logo.svg"
   }
 ]

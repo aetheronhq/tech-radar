@@ -2,6 +2,10 @@
 
 This document provides instructions for converting the tech radar JSON into Cursor IDE rules that guide AI assistants in technology decisions.
 
+## ⚠️ CRITICAL: File Extension Must Be .mdc
+
+**IMPORTANT**: Cursor rules MUST use the `.mdc` extension, NOT `.md`. This is Cursor's required format for rule files. Always create files with `.mdc` extension!
+
 ## Important: Cursor Rules Format
 
 **Cursor uses YAML frontmatter** for rule configuration:
@@ -17,26 +21,29 @@ alwaysApply: false
 
 **Key Points:**
 - `description`: Explains when the rule should be applied
-- `alwaysApply`: Set to `true` for rules that should always be active, `false` for context-dependent rules
+- `alwaysApply`: Set to `false` to allow the agent to include based on context
 - After the frontmatter, write clear instructions for the AI
 
 **Format Requirements:**
-- Each `.md` file MUST start with the YAML frontmatter between `---` markers
+- Each `.mdc` file MUST start with the YAML frontmatter between `---` markers
+- Files MUST use `.mdc` extension (NOT `.md`)
 - Use clear, directive language in the content (e.g., "ALWAYS use X", "NEVER suggest Y")
 - Write as instructions to an AI assistant
 - Keep rules actionable and specific
 
 ## Task Overview
 
-Convert `radar-entries.json` into 4 separate Cursor rule files, one for each quadrant:
-1. `.cursor/rules/radar/infrastructure.md`
-2. `.cursor/rules/radar/languages-frameworks.md`
-3. `.cursor/rules/radar/services-llms.md`
-4. `.cursor/rules/radar/tools-methodologies.md`
+Convert `public/radar-entries.json` into 4 separate Cursor rule files, one for each quadrant.
+
+**REMEMBER: All files MUST use `.mdc` extension!**
+1. `.cursor/rules/radar/infrastructure.mdc`
+2. `.cursor/rules/radar/languages-frameworks.mdc`
+3. `.cursor/rules/radar/services-llms.mdc`
+4. `.cursor/rules/radar/tools-methodologies.mdc`
 
 ## Source Data Structure
 
-The `radar-entries.json` file contains an array of technology entries with this structure:
+The `public/radar-entries.json` file contains an array of technology entries with this structure:
 ```json
 {
   "label": "Technology Name",
@@ -94,7 +101,7 @@ For each quadrant file, follow this template:
 ```markdown
 ---
 description: Technology decisions for [quadrant name] based on our tech radar
-alwaysApply: true
+alwaysApply: false
 ---
 
 # [Quadrant Name] - Technology Decisions
@@ -140,12 +147,12 @@ This file guides AI assistants on [quadrant] technology choices based on our tec
 
 ## Example Output (Note the Conciseness!)
 
-For the infrastructure quadrant file:
+For the infrastructure quadrant file (`infrastructure.mdc` - note the .mdc extension!):
 
 ```markdown
 ---
 description: Infrastructure technology decisions based on our tech radar
-alwaysApply: true
+alwaysApply: false
 ---
 
 # Infrastructure - Technology Decisions
@@ -177,10 +184,10 @@ This file guides AI assistants on infrastructure technology choices based on our
    ```yaml
    ---
    description: [describe when this rule applies]
-   alwaysApply: true  # Set to true for tech radar rules
+   alwaysApply: false  # Set to false to allow context-based inclusion
    ---
    ```
-2. **File Format**: Must be `.md` files with the frontmatter at the top
+2. **File Format**: Must be `.mdc` files (NOT `.md`) with the frontmatter at the top - this is CRITICAL!
 3. **Language Style**: Write as clear instructions to an AI assistant
 4. **Sort Order**: Sort technologies within each ring alphabetically
 5. **Missing Data**: If a technology has no decision text, use the summary
@@ -197,9 +204,9 @@ This file guides AI assistants on infrastructure technology choices based on our
 
 ## Files to Read
 
-1. Read `radar-entries.json` to get all technology entries
+1. Read `public/radar-entries.json` to get all technology entries
 2. Create the `.cursor/rules/radar/` directory structure
-3. Create the 4 markdown files in the `/radar` subfolder
+3. Create the 4 `.mdc` files (NOT `.md`) in the `/radar` subfolder - MUST use `.mdc` extension!
 4. Each file should only contain technologies from its respective quadrant
 
 ## Benefits of the /radar Subfolder
@@ -208,3 +215,11 @@ This file guides AI assistants on infrastructure technology choices based on our
 - Makes it easy to update or remove all radar rules at once
 - Allows projects to have their own custom rules alongside radar guidance
 - Clear namespace separation prevents conflicts
+
+## ⚠️ FINAL REMINDER: Use .mdc Extension!
+
+**CRITICAL**: All generated files MUST use the `.mdc` extension:
+- ✅ CORRECT: `infrastructure.mdc`
+- ❌ WRONG: `infrastructure.md`
+
+Cursor will NOT recognize `.md` files as rules. You MUST use `.mdc` for the rules to work!

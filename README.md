@@ -35,7 +35,6 @@ radar/
 │   ├── radar-entries.json # Technology data
 │   ├── action-setup.md  # GitHub Action setup guide
 │   └── vendor/          # Third-party libraries
-├── radar-entries.json   # Source technology data
 ├── RADAR_TO_CURSOR_RULES.md # AI prompt for generating rules
 ├── deploy.sh           # Deploy to S3
 ├── serve.sh            # Local dev server
@@ -49,7 +48,7 @@ Please scan the radar and open PRs/issues for:
 - **Clearer "when to use" notes** or better alternatives
 - **Experiments** you're running that could become our go‑to choice
 
-Edit `radar-entries.json` to add/update technologies.
+Edit `public/radar-entries.json` to add/update technologies.
 
 ### Entry Format Example
 ```json
@@ -135,6 +134,10 @@ See [ACTION_SETUP.md](public/action-setup.md) for detailed instructions on:
 # Deploy to S3 (requires AWS credentials)
 ./deploy.sh
 ```
+
+### Editing Technology Entries
+
+All technology entries are stored in `public/radar-entries.json`. This is the single source of truth for the radar data.
 
 ---
 Maintained by Aetheron Engineering.
