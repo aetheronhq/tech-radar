@@ -61,18 +61,11 @@ jobs:
 4. **Comments on PR**: Notifies developers when rules are updated
 5. **Organized Structure**: Rules are placed in `.cursor/rules/radar/` subfolder
 
-### Configuration Options
+### Zero Configuration
 
-The action works with zero configuration! It automatically fetches from the deployed radar site.
+The action requires absolutely no configuration! It automatically fetches rules from the Aetheron Tech Radar at `https://radar.sandbox.aetheron.com/.cursor/rules/radar/`
 
-**Default behavior**: Fetches from `https://radar.sandbox.aetheron.com/.cursor/rules/radar/`
-
-If you're hosting your own radar:
-```yaml
-- uses: YOUR_ORG/radar@main
-  with:
-    radar-url: 'https://your-radar-site.com/.cursor/rules/radar'
-```
+Just use it - that's it!
 
 ### How Cursor Uses These Rules
 
@@ -98,9 +91,9 @@ If you're hosting your own radar:
 ### Troubleshooting
 
 **Action fails with 404 errors**
-- Ensure the radar site is accessible at the URL
+- Ensure the radar site is accessible at https://radar.sandbox.aetheron.com
 - Check that rules have been generated and deployed
-- Verify the URL structure matches: `{base-url}/.cursor/rules/radar/{file}.md`
+- The action expects files at: `https://radar.sandbox.aetheron.com/.cursor/rules/radar/{file}.md`
 
 **No changes detected**
 - Rules are already up to date

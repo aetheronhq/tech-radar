@@ -84,7 +84,7 @@ jobs:
 ```
 
 This will:
-- ✅ Sync rules from the deployed radar site to your repo
+- ✅ Sync rules from https://radar.sandbox.aetheron.com to your repo
 - 🤖 Automatically update on every PR
 - 💬 Comment when rules are updated
 - 📁 Keep radar rules organized in a `/radar` subfolder
