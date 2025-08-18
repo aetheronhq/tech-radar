@@ -78,15 +78,15 @@ This radar can be converted into Cursor IDE rules to guide AI assistants based o
 To automatically sync tech radar rules to your repository, add this workflow with **just one line**:
 
 ```yaml
-# .github/workflows/sync-radar.yml
-name: Sync Tech Radar Rules
+# .github/workflows/sync-cursor-rules.yml
+name: Sync Organization Cursor Rules
 
 on:
   pull_request:
 
 jobs:
   sync-radar:
-    uses: Cognitive-Creators-AI/shared-ci-workflows/.github/workflows/sync-tech-radar-rules.yml@main
+    uses: Cognitive-Creators-AI/shared-ci-workflows/.github/workflows/sync-org-cursor-rules.yml@main
     permissions:
       contents: write
       pull-requests: write

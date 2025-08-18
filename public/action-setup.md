@@ -1,23 +1,23 @@
-# Tech Radar Cursor Rules - GitHub Action Setup
+# Organization Cursor Rules - GitHub Action Setup
 
-**What This Does:** Automatically syncs your organization's technology radar decisions to Cursor IDE, ensuring all developers get consistent technology recommendations and guidance.
+**What This Does:** Automatically syncs your organization's Cursor IDE rules, including technology radar decisions, ensuring all developers get consistent guidance and recommendations.
 
 ## 🚀 Quick Start (One-Shot Setup)
 
-**Add tech radar rules to your repository in 30 seconds:**
+**Add organization Cursor rules to your repository in 30 seconds:**
 
-1. Create `.github/workflows/sync-radar.yml` in your repository
+1. Create `.github/workflows/sync-cursor-rules.yml` in your repository
 2. Copy and paste this content:
 
 ```yaml
-name: Sync Tech Radar Rules
+name: Sync Organization Cursor Rules
 
 on:
   pull_request:
 
 jobs:
   sync-radar:
-    uses: Cognitive-Creators-AI/shared-ci-workflows/.github/workflows/sync-tech-radar-rules.yml@main
+    uses: Cognitive-Creators-AI/shared-ci-workflows/.github/workflows/sync-org-cursor-rules.yml@main
     permissions:
       contents: write
       pull-requests: write
@@ -25,7 +25,7 @@ jobs:
 
 3. Commit and push - **Done!** ✅
 
-The action will automatically sync tech radar rules on every pull request.
+The action will automatically sync organization Cursor rules on every pull request.
 
 ## How It Works
 
