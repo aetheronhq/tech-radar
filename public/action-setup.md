@@ -1,64 +1,33 @@
-# Tech Radar Cursor Rules - GitHub Action Setup
+# Organization Cursor Rules - GitHub Action Setup
 
-**What This Does:** Automatically syncs your organization's technology radar decisions to Cursor IDE, ensuring all developers get consistent technology recommendations and guidance.
+**What This Does:** Automatically syncs your organization's Cursor IDE rules, including technology radar decisions, ensuring all developers get consistent guidance and recommendations.
 
 ## 🚀 Quick Start (One-Shot Setup)
 
-**Add tech radar rules to your repository in 30 seconds:**
+**Add organization Cursor rules to your repository in 30 seconds:**
 
-1. Create `.github/workflows/sync-radar.yml` in your repository
+1. Create `.github/workflows/sync-cursor-rules.yml` in your repository
 2. Copy and paste this content:
 
 ```yaml
-name: Sync Tech Radar Rules
+name: Sync Organization Cursor Rules
 
 on:
   pull_request:
 
 jobs:
   sync-radar:
-    runs-on: ubuntu-latest
+    uses: Cognitive-Creators-AI/shared-ci-workflows/.github/workflows/sync-org-cursor-rules.yml@main
     permissions:
       contents: write
       pull-requests: write
-    steps:
-      - uses: Cognitive-Creators-AI/tech-radar@main  # ← That's it! 🎉
 ```
 
 3. Commit and push - **Done!** ✅
 
-The action will automatically sync tech radar rules on every pull request.
+The action will automatically sync organization Cursor rules on every pull request.
 
-## For Organization Administrators
-
-### Initial Setup (One Time)
-
-1. Ensure this radar repository contains generated Cursor rules in:
-   ```
-   .cursor/rules/radar/
-   ├── infrastructure.md
-   ├── languages-frameworks.md  
-   ├── services-llms.md
-   └── tools-methodologies.md
-   ```
-
-2. **Rules must be in Cursor-compatible format**:
-   - Markdown files (`.md` extension) with YAML frontmatter
-   - Must start with frontmatter between `---` markers:
-     ```yaml
-     ---
-     description: Brief description of when to apply this rule
-     alwaysApply: true
-     ---
-     ```
-   - After frontmatter, include human-readable instructions for the AI
-   - Example: "ALWAYS prefer PostgreSQL for new databases"
-
-3. Make sure the radar site is publicly accessible (or accessible to your CI/CD runners).
-
-## For Repository Maintainers
-
-### How It Works
+## How It Works
 
 **No configuration needed!** The action automatically fetches rules from the deployed radar site.
 

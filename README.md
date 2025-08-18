@@ -36,7 +36,6 @@ radar/
 │   ├── action-setup.md  # GitHub Action setup guide
 │   └── vendor/          # Third-party libraries
 ├── radar-entries.json   # Source technology data
-├── action.yml          # GitHub Action for syncing rules
 ├── RADAR_TO_CURSOR_RULES.md # AI prompt for generating rules
 ├── deploy.sh           # Deploy to S3
 ├── serve.sh            # Local dev server
@@ -79,20 +78,18 @@ This radar can be converted into Cursor IDE rules to guide AI assistants based o
 To automatically sync tech radar rules to your repository, add this workflow with **just one line**:
 
 ```yaml
-# .github/workflows/sync-radar.yml
-name: Sync Tech Radar Rules
+# .github/workflows/sync-cursor-rules.yml
+name: Sync Organization Cursor Rules
 
 on:
   pull_request:
 
 jobs:
   sync-radar:
-    runs-on: ubuntu-latest
+    uses: Cognitive-Creators-AI/shared-ci-workflows/.github/workflows/sync-org-cursor-rules.yml@main
     permissions:
       contents: write
       pull-requests: write
-    steps:
-      - uses: Cognitive-Creators-AI/tech-radar@main  # ← That's it! One line!
 ```
 
 This will:
