@@ -1,0 +1,20 @@
+version: '3'
+
+vars:
+  PORT: '{{.PORT | default "8000"}}'
+
+tasks:
+  start:
+    desc: Start the development server (replaces ./serve.sh)
+    cmds:
+      - ./serve.sh {{.PORT}}
+
+  deploy:
+    desc: Deploy the radar to AWS S3 with CloudFront invalidation (replaces ./deploy.sh)  
+    cmds:
+      - ./deploy.sh
+
+  default:
+    desc: Show available tasks
+    cmds:
+      - task --list
