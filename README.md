@@ -85,7 +85,7 @@ on:
 
 jobs:
   sync-radar:
-    uses: Cognitive-Creators-AI/shared-ci-workflows/.github/workflows/sync-org-cursor-rules.yml@main
+    uses: aetheronhq/shared-ci-workflows/.github/workflows/sync-org-cursor-rules.yml@main
     permissions:
       contents: write
       pull-requests: write
