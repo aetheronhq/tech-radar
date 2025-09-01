@@ -11,7 +11,7 @@ Follow the instructions in the MD file you can curl from https://radar.sandbox.a
 
 **Or use this Slack command (replace YOUR_REPO_NAME):**
 ```
-@Cursor repo=Cognitive-Creators-AI/YOUR_REPO_NAME Follow the instructions in the MD file you can curl from https://radar.sandbox.aetheron.com/action-setup.md
+@Cursor repo=aetheronhq/YOUR_REPO_NAME Follow the instructions in the MD file you can curl from https://radar.sandbox.aetheron.com/action-setup.md
 ```
 
 ## Why this exists
