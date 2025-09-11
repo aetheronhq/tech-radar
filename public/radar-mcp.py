@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["mcp>=1.0.0"]
+# dependencies = ["mcp>=1.0.0", "pydantic>=2.6"]
 # ///
 
 """
@@ -31,7 +31,8 @@ import os
 import ssl
 import time
 import urllib.request
-from typing import Any, Iterable, TypedDict
+from typing import Any, Iterable, TypedDict, Annotated
+from pydantic import Field
 
 from mcp.server.fastmcp import FastMCP
 
@@ -120,30 +121,54 @@ _SOURCE_URL = os.environ.get(ENTRIES_URL_ENV, DEFAULT_ENTRIES_URL)
 _ENTRIES: list[RadarEntry] = _fetch_entries(_SOURCE_URL)  # type: ignore[assignment]
 
 
-@mcp.tool()
+@mcp.tool(
+  name="get_tech_stack_guidance",
+  title="Aetheron Tech Radar — Tech Stack Guidance",
+  description=(
+    """Get Aetheron's official technology decisions and recommendations from our Tech Radar.
+    
+    Use this tool when:
+    - Designing new features or products to choose the right tech stack
+    - Writing PRDs or technical specifications 
+    - Making architecture decisions or technology trade-offs
+    - Evaluating whether to adopt, consider, experiment with, or avoid specific technologies
+    - Understanding our standard practices and approved alternatives
+    
+    Returns our curated technology choices with decision rationale, use cases, and alternatives.
+    
+    Quadrants: 0=Infrastructure, 1=Languages & Frameworks, 2=Services & LLMs, 3=Tools & Methodologies
+    Rings: 0=Primary (default choice), 1=Consider (case-by-case), 2=Experiment (trial phase), 3=Avoid (use alternatives)
+    
+    Examples:
+    - get_tech_stack_guidance() - Get all technology decisions
+    - get_tech_stack_guidance(quadrant=1, ring=[0, 1]) - Primary + Consider languages/frameworks
+    - get_tech_stack_guidance(ring=0) - All primary/default technologies across categories
+    """
+  ),
+  annotations={
+    "title": "Aetheron Tech Radar — Tech Stack Guidance",
+    "readOnlyHint": True,
+    "idempotentHint": True,
+    "openWorldHint": True,
+  },
+  structured_output=True,
+)
 def get_tech_stack_guidance(
-  quadrant: int | list[int] | None = None,
-  ring: int | list[int] | None = None,
+  quadrant: Annotated[
+    int | list[int] | None,
+    Field(description=(
+      "Quadrant filter. 0=Infrastructure, 1=Languages & Frameworks, "
+      "2=Services & LLMs, 3=Tools & Methodologies. Accepts single int or list."
+    )),
+  ] = None,
+  ring: Annotated[
+    int | list[int] | None,
+    Field(description=(
+      "Ring filter. 0=Primary, 1=Consider, 2=Experiment, 3=Avoid. "
+      "Accepts single int or list."
+    )),
+  ] = None,
 ) -> RadarResponse:
-  """Get Aetheron's official technology decisions and recommendations from our Tech Radar.
-  
-  Use this tool when:
-  - Designing new features or products to choose the right tech stack
-  - Writing PRDs or technical specifications 
-  - Making architecture decisions or technology trade-offs
-  - Evaluating whether to adopt, consider, experiment with, or avoid specific technologies
-  - Understanding our standard practices and approved alternatives
-  
-  Returns our curated technology choices with decision rationale, use cases, and alternatives.
-  
-  Quadrants: 0=Infrastructure, 1=Languages & Frameworks, 2=Services & LLMs, 3=Tools & Methodologies
-  Rings: 0=Primary (default choice), 1=Consider (case-by-case), 2=Experiment (trial phase), 3=Avoid (use alternatives)
-  
-  Examples:
-  - get_tech_stack_guidance() - Get all technology decisions
-  - get_tech_stack_guidance(quadrant=1, ring=[0,1]) - Primary + Consider languages/frameworks
-  - get_tech_stack_guidance(ring=0) - All primary/default technologies across categories
-  """
   started = time.time()
 
   quadrants = _as_int_set(quadrant)
