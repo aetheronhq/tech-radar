@@ -18,8 +18,8 @@ Then configure your MCP-capable client (e.g., Cursor) to launch the above comman
 
 Tool name: "get_tech_stack_guidance"
 Arguments (all optional):
-  - quadrant: int | list[int]  (0=Infrastructure, 1=Languages & Frameworks, 2=Services & LLMs, 3=Tools & Methodologies)
-  - ring:     int | list[int]  (0=Primary, 1=Consider, 2=Experiment, 3=Avoid)
+  - quadrant: list[int]  (0=Infrastructure, 1=Languages & Frameworks, 2=Services & LLMs, 3=Tools & Methodologies)
+  - ring:     list[int]  (0=Primary, 1=Consider, 2=Experiment, 3=Avoid)
 
 The server fetches entries from RADAR_ENTRIES_URL (env override) or the hosted default.
 """
@@ -32,7 +32,8 @@ import ssl
 import time
 import urllib.request
 from typing import Any, Iterable, TypedDict, Annotated
-from pydantic import Field
+from pydantic import Field, BeforeValidator
+import re
 
 from mcp.server.fastmcp import FastMCP
 
@@ -52,6 +53,43 @@ def _as_int_set(value: int | Iterable[int] | None) -> set[int] | None:
   except TypeError:
     # Not iterable
     return {int(value)}
+
+
+def _coerce_to_int_list(value: Any) -> list[int] | None:
+  """Coerce common inputs (int, list[int|str], comma/space-separated str) to list[int]."""
+  if value is None:
+    return None
+  if isinstance(value, int):
+    return [value]
+  if isinstance(value, str):
+    s = value.strip()
+    # Handle JSON-style array in a string, e.g. "[1, 2]" or '["1","2"]'
+    if (s.startswith("[") and s.endswith("]")):
+      try:
+        loaded = json.loads(s)
+        tokens = loaded if isinstance(loaded, list) else [loaded]
+      except Exception:
+        # Fallback to splitting after trimming brackets
+        s = s.removeprefix("[").removesuffix("]")
+        tokens = [t for t in re.split(r"[,\s]+", s) if t]
+    else:
+      tokens = [t for t in re.split(r"[,\s]+", s) if t]
+  else:
+    try:
+      tokens = list(value)
+    except TypeError:
+      return [int(value)]
+
+  result: list[int] = []
+  for token in tokens:
+    if isinstance(token, int):
+      result.append(token)
+    else:
+      s = str(token).strip()
+      if not s:
+        continue
+      result.append(int(s))
+  return result
 
 
 def _fetch_entries(url: str, timeout: float = 10.0) -> list[dict[str, Any]]:
@@ -141,8 +179,8 @@ _ENTRIES: list[RadarEntry] = _fetch_entries(_SOURCE_URL)  # type: ignore[assignm
     
     Examples:
     - get_tech_stack_guidance() - Get all technology decisions
-    - get_tech_stack_guidance(quadrant=1, ring=[0, 1]) - Primary + Consider languages/frameworks
-    - get_tech_stack_guidance(ring=0) - All primary/default technologies across categories
+    - get_tech_stack_guidance(quadrant=[1], ring=[0, 1]) - Primary + Consider languages/frameworks
+    - get_tech_stack_guidance(ring=[0]) - All primary/default technologies across categories
     """
   ),
   annotations={
@@ -155,17 +193,19 @@ _ENTRIES: list[RadarEntry] = _fetch_entries(_SOURCE_URL)  # type: ignore[assignm
 )
 def get_tech_stack_guidance(
   quadrant: Annotated[
-    int | list[int] | None,
+    list[Annotated[int, Field(ge=0, le=3)]] | None,
+    BeforeValidator(_coerce_to_int_list),
     Field(description=(
-      "Quadrant filter. 0=Infrastructure, 1=Languages & Frameworks, "
-      "2=Services & LLMs, 3=Tools & Methodologies. Accepts single int or list."
+      "Quadrant filter as an array of integers (0–3). "
+      "0=Infrastructure, 1=Languages & Frameworks, 2=Services & LLMs, 3=Tools & Methodologies."
     )),
   ] = None,
   ring: Annotated[
-    int | list[int] | None,
+    list[Annotated[int, Field(ge=0, le=3)]] | None,
+    BeforeValidator(_coerce_to_int_list),
     Field(description=(
-      "Ring filter. 0=Primary, 1=Consider, 2=Experiment, 3=Avoid. "
-      "Accepts single int or list."
+      "Ring filter as an array of integers (0–3). "
+      "0=Primary, 1=Consider, 2=Experiment, 3=Avoid."
     )),
   ] = None,
 ) -> RadarResponse:
