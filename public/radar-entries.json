@@ -174,9 +174,9 @@
   {
     "label": "Amazon ECS",
     "quadrant": 0,
-    "ring": 1,
+    "ring": 0,
     "summary": "Managed containers (Fargate/EC2).",
-    "decision": "Consider for SSR and services needing container control.",
+    "decision": "Primary for containerized services and SSR needing control.",
     "when_to_use": ["SSR backends", "Persistent APIs", "Background workers", "Long-running or GPU workloads"],
     "consider_alternitive": ["Simple static/CSR apps (use S3 + CloudFront)", "Burst-only workloads (use Lambda)"],
     "links": [{ "title": "Docs", "url": "https://docs.aws.amazon.com/ecs/" }],
@@ -209,9 +209,9 @@
     "quadrant": 0,
     "ring": 1,
     "summary": "Hosted Postgres + auth/storage/RT for rapid apps.",
-    "decision": "Consider for prototypes and small apps.",
-    "when_to_use": ["MVPs", "Internal tools"],
-    "consider_alternitive": ["Strict compliance or VPC needs (prefer AWS services)"],
+    "decision": "Consider for small/PoC apps; not primary for core products.",
+    "when_to_use": ["PoCs", "MVPs", "Internal tools"],
+    "consider_alternitive": ["Strict compliance or VPC needs (prefer AWS services)", "Core products needing tight control (prefer AWS services)"],
     "links": [{ "title": "Docs", "url": "https://supabase.com/docs" }],
     "logo": "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/supabase.svg"
   },
@@ -577,5 +577,27 @@
     "consider_alternitive": [],
     "links": [{ "title": "Docs", "url": "https://taskfile.dev/" }],
     "logo": "https://taskfile.dev/img/logo.svg"
+  },
+  {
+    "label": "DaisyUI",
+    "quadrant": 1,
+    "ring": 1,
+    "summary": "Tailwind CSS component library for rapid UI.",
+    "decision": "Consider for rapid UI with Tailwind; not for heavily customized design systems.",
+    "when_to_use": ["Prototyping", "Simple UIs", "Fast iteration"],
+    "consider_alternitive": ["Custom design systems or complex bespoke UIs"],
+    "links": [{ "title": "Docs", "url": "https://daisyui.com/docs/" }],
+    "logo": "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/daisyui.svg"
+  },
+  {
+    "label": "GPT Codex CLI",
+    "quadrant": 3,
+    "ring": 0,
+    "summary": "CLI for AI-assisted code generation and edits.",
+    "decision": "Primary coding assistant (CLI) alongside Cursor IDE and Claude Code.",
+    "when_to_use": ["All coding tasks", "Non-IDE workflows", "Automation scripts"],
+    "consider_alternitive": [],
+    "links": [],
+    "logo": "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/openai.svg"
   }
 ]
