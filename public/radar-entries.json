@@ -592,11 +592,11 @@
   {
     "label": "GPT Codex CLI",
     "quadrant": 3,
-    "ring": 1,
+    "ring": 0,
     "summary": "CLI for AI-assisted code generation and edits.",
-    "decision": "Consider for CLI-based code generation; prefer IDE-native tools as primary.",
-    "when_to_use": ["Non-IDE workflows", "Automation scripts"],
-    "consider_alternitive": ["IDE-native assistants (Cursor IDE, Claude Code)"],
+    "decision": "Primary coding assistant (CLI) alongside Cursor IDE and Claude Code.",
+    "when_to_use": ["All coding tasks", "Non-IDE workflows", "Automation scripts"],
+    "consider_alternitive": [],
     "links": [],
     "logo": "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/openai.svg"
   }
