@@ -14,6 +14,18 @@ Follow the instructions in the MD file you can curl from https://radar.sandbox.a
 @Cursor repo=aetheronhq/YOUR_REPO_NAME Follow the instructions in the MD file you can curl from https://radar.sandbox.aetheron.com/action-setup.md
 ```
 
+**You can also install the Radar MCP server in Cursor / Claude Code**
+```json
+{
+  "mcpServers": {
+    "aetheron-radar": {
+      "command": "uv",
+      "args": ["run", "https://radar.sandbox.aetheron.com/radar-mcp.py"]
+    }
+  }
+}
+```
+
 ## Why this exists
 - **Internal**: clear defaults, faster decisions, easier onboarding, a place to propose/track experiments, and shared "when to use X vs Y" guidance.
 - **External**: signals we're modern and intentional, shows quality to candidates/clients, and serves as a strong tech‑marketing asset.
@@ -133,6 +145,32 @@ See [ACTION_SETUP.md](public/action-setup.md) for detailed instructions on:
 
 # Deploy to S3 (requires AWS credentials)
 ./deploy.sh
+```
+
+### MCP tool for programmatic access
+
+We also publish a minimal MCP server exposing one `get_tech_stack_guidance` tool that returns entries from the hosted JSON with optional filters.
+The MCP server gives you access to the radar data at the AI agent level, avoiding per-repo setup.
+
+Client config example (Cursor/Claude-like):
+```json
+{
+  "mcpServers": {
+    "aetheron-radar": {
+      "command": "uv",
+      "args": ["run", "https://radar.sandbox.aetheron.com/radar-mcp.py"]
+    }
+  }
+}
+```
+
+Tool: `get_tech_stack_guidance(quadrant?: int | int[], ring?: int | int[])`
+- Quadrants: 0 Infrastructure, 1 Languages & Frameworks, 2 Services & LLMs, 3 Tools & Methodologies  
+- Rings: 0 Primary, 1 Consider, 2 Experiment, 3 Avoid
+
+Examples:
+```json
+{"tool":"get_tech_stack_guidance","arguments": {"quadrant": 1, "ring": [0,1]}}
 ```
 
 ### Editing Technology Entries
